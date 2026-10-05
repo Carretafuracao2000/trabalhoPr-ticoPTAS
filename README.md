@@ -29,3 +29,22 @@ middlewares/
     verificarRegras.js         regras de negócio: leitor bloqueado, exemplar emprestado, exclusão de itens em uso
     tratarErros.js             rota não encontrada (404) e erros inesperados (400/500)
 ```
+## Entidades
+
+| Entidade | Campos |
+|---|---|
+| Livro | `id`, `titulo`, `autor`, `isbn` (opcional) |
+| Exemplar | `id`, `livroId`, `codigo` (único), `disponivel` (calculado) |
+| Leitor | `id`, `nome`, `telefone` (opcional) |
+| Empréstimo | `id`, `leitorId`, `exemplarId`, `dataEmprestimo`, `dataPrevistaDevolucao`, `dataDevolucao`, `multaPaga`, `dataPagamento`, `status`, `diasAtraso`, `multa` (os três últimos são calculados) |
+
+Relações: um Livro tem vários Exemplares; um Leitor tem vários Empréstimos; cada Empréstimo é de um Exemplar.
+
+Todas as datas usam o formato `AAAA-MM-DD`.
+
+## Regras de negócio
+
+1. **Cálculo da multa:** cada dia de atraso na devolução custa **R$ 5,00**. O prazo de empréstimo é de **14 dias** a partir de `dataEmprestimo`. `multa = diasAtraso × 5`. Enquanto o livro não é devolvido, a multa continua crescendo (calculada até a data de hoje).
+2. **Bloqueio do leitor:** o leitor que tem empréstimo atrasado, ou multa ainda não paga, não pode fazer novos empréstimos (resposta `403`). Ele é liberado depois de devolver o livro e pagar a multa.
+
+As constantes `VALOR_MULTA_DIA` e `PRAZO_EMPRESTIMO_DIAS` ficam no início do `server.js`.
