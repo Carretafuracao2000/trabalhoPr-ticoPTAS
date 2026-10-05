@@ -1,6 +1,7 @@
 import express from "express"
 
-import criarBuscaPorId from "./middlewares/buscarPorId.js"
+import criarBuscaPorId from "./buscarPorId.js"
+import {validarLivro, validarExemplar, validarLeitor, validarEmprestimo, validarDevolucao} from "./validarDados.js"
 
 const app = express()
 const PORTA = 3000
@@ -18,6 +19,7 @@ const bancoDeDados = {
 
 const buscarLivro = criarBuscaPorId(bancoDeDados.livros, 'livro', 'Livro')
 
+
 app.use(express.json())
 
 app.get('/livros', (req, res) => {
@@ -26,6 +28,15 @@ app.get('/livros', (req, res) => {
 
 app.get('/livros/:id', buscarLivro, (req, res) => {
     res.json(req.livro)
+})
+
+app.post('/livros', validarLivro, (req, res) => {
+    const {titulo, autor, isbn} = req.body
+    const novoLivro = {id: bancoDeDados.proximoId.livro++, titulo, autor, isbn: isbn ?? null}
+
+    bancoDeDados.livros.push(novoLivro)
+
+    res.status(201).json(novoLivro)
 })
 
 app.listen(PORTA, () => {
