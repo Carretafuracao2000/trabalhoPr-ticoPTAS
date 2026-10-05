@@ -39,6 +39,14 @@ app.post('/livros', validarLivro, (req, res) => {
     res.status(201).json(novoLivro)
 })
 
+app.put('/livros/:id', buscarLivro, validarLivro, (req, res) => {
+    const {titulo, autor, isbn} = req.body
+
+    Object.assign(req.livro, {titulo, autor, isbn: isbn ?? null})
+
+    res.json(req.livro)
+})
+
 app.listen(PORTA, () => {
     console.log(`API da biblioteca rodando em http://localhost:${PORTA}`)
 })
