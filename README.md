@@ -70,3 +70,70 @@ As constantes `VALOR_MULTA_DIA` e `PRAZO_EMPRESTIMO_DIAS` ficam no início do `s
 | POST | `/exemplares` | Cadastra (`livroId` e `codigo` obrigatórios) |
 | PUT | `/exemplares/:id` | Atualiza |
 | DELETE | `/exemplares/:id` | Remove (`409` se tiver empréstimos) |
+
+### Leitores (CRUD)
+
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/leitores` | Lista os leitores |
+| GET | `/leitores/:id` | Busca um leitor |
+| GET | `/leitores/:id/situacao` | Informa se está bloqueado e quais pendências possui |
+| POST | `/leitores` | Cadastra (`nome` obrigatório) |
+| PUT | `/leitores/:id` | Atualiza |
+| DELETE | `/leitores/:id` | Remove (`409` se tiver empréstimos) |
+
+### Empréstimos
+
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/emprestimos` | Lista (filtros opcionais `?leitorId=1` e `?status=atrasado`) |
+| GET | `/emprestimos/:id` | Busca um empréstimo com multa calculada |
+| POST | `/emprestimos` | Registra empréstimo |
+| POST | `/emprestimos/:id/devolucao` | Registra a devolução |
+| POST | `/emprestimos/:id/pagamento` | Registra o pagamento da multa |
+
+Valores de `status`: `em_dia`, `atrasado`, `devolvido`.
+
+**POST `/emprestimos`**
+
+```json
+{
+    "leitorId": 1,
+    "exemplarId": 1,
+    "dataEmprestimo": "2026-09-14"
+}
+```
+
+`dataEmprestimo` é opcional (padrão: hoje) e não pode ser futura. Erros possíveis: `400` (dados inválidos), `403` (leitor bloqueado), `404` (leitor ou exemplar inexistente), `409` (exemplar já emprestado).
+
+**POST `/emprestimos/:id/devolucao`**
+
+```json
+{
+    "dataDevolucao": "2026-10-04"
+}
+```
+
+Corpo opcional (padrão: hoje). A resposta já traz `diasAtraso` e `multa`. Retorna `409` se já foi devolvido.
+
+**POST `/emprestimos/:id/pagamento`**
+
+Sem corpo. Só funciona depois da devolução e quando há multa (`409` nos demais casos).
+
+**Exemplo de resposta (empréstimo atrasado)**
+
+```json
+{
+    "id": 1,
+    "leitorId": 1,
+    "exemplarId": 1,
+    "dataEmprestimo": "2026-09-14",
+    "dataPrevistaDevolucao": "2026-09-28",
+    "dataDevolucao": null,
+    "multaPaga": false,
+    "dataPagamento": null,
+    "status": "atrasado",
+    "diasAtraso": 6,
+    "multa": 30
+}
+```
