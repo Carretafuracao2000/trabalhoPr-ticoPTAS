@@ -2,6 +2,14 @@ import express from "express"
 
 import criarBuscaPorId from "./buscarPorId.js"
 import {validarLivro, validarExemplar, validarLeitor, validarEmprestimo, validarDevolucao} from "./validarDados.js"
+import {
+    criarVerificacaoDeExemplar,
+    criarVerificacaoDeEmprestimo,
+    impedirExclusaoSeEmUso,
+    verificarEmprestimoEmAberto,
+    verificarEmprestimoDevolvido
+} from "./middlewares/verificarRegras.js"
+
 
 const app = express()
 const PORTA = 3000
@@ -45,6 +53,12 @@ app.put('/livros/:id', buscarLivro, validarLivro, (req, res) => {
     Object.assign(req.livro, {titulo, autor, isbn: isbn ?? null})
 
     res.json(req.livro)
+})
+
+app.delete('/livros/:id', buscarLivro, impedirExclusaoDoLivro, (req, res) => {
+    removerDaLista(bancoDeDados.livros, req.livro)
+
+    res.status(204).send()
 })
 
 app.listen(PORTA, () => {
