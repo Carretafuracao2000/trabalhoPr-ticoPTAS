@@ -137,3 +137,22 @@ Sem corpo. Só funciona depois da devolução e quando há multa (`409` nos dema
     "multa": 30
 }
 ```
+## Exemplo de fluxo
+
+```bash
+curl -X POST localhost:3000/livros -H "Content-Type: application/json" -d '{"titulo":"Dom Casmurro","autor":"Machado de Assis"}'
+curl -X POST localhost:3000/exemplares -H "Content-Type: application/json" -d '{"livroId":1,"codigo":"DC-001"}'
+curl -X POST localhost:3000/leitores -H "Content-Type: application/json" -d '{"nome":"Maria"}'
+curl -X POST localhost:3000/emprestimos -H "Content-Type: application/json" -d '{"leitorId":1,"exemplarId":1}'
+curl -X POST localhost:3000/emprestimos/1/devolucao
+```
+
+## Códigos de resposta
+
+| Código | Significado |
+|---|---|
+| 200 / 201 / 204 | Sucesso / criado / removido |
+| 400 | Dados inválidos |
+| 403 | Leitor bloqueado |
+| 404 | Recurso não encontrado |
+| 409 | Conflito de regra (já devolvido, exemplar emprestado etc.) |
