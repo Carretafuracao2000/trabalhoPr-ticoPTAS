@@ -48,3 +48,25 @@ Todas as datas usam o formato `AAAA-MM-DD`.
 2. **Bloqueio do leitor:** o leitor que tem empréstimo atrasado, ou multa ainda não paga, não pode fazer novos empréstimos (resposta `403`). Ele é liberado depois de devolver o livro e pagar a multa.
 
 As constantes `VALOR_MULTA_DIA` e `PRAZO_EMPRESTIMO_DIAS` ficam no início do `server.js`.
+
+# Endpoints
+
+### Livros (CRUD)
+
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/livros` | Lista os livros |
+| GET | `/livros/:id` | Busca um livro |
+| POST | `/livros` | Cadastra (`titulo` e `autor` obrigatórios) |
+| PUT | `/livros/:id` | Atualiza |
+| DELETE | `/livros/:id` | Remove (`409` se houver exemplares) |
+
+### Exemplares (CRUD)
+
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/exemplares` | Lista (filtro opcional `?livroId=1`) |
+| GET | `/exemplares/:id` | Busca um exemplar |
+| POST | `/exemplares` | Cadastra (`livroId` e `codigo` obrigatórios) |
+| PUT | `/exemplares/:id` | Atualiza |
+| DELETE | `/exemplares/:id` | Remove (`409` se tiver empréstimos) |
