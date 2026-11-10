@@ -1,5 +1,5 @@
 import express from 'express'
-importmpres etimoRoutes from './routes/emprestimos.routes.js';
+import emprestimoRoutes from './routes/emprestimos.routes.js';
 import exemplaresRoutes from './routes/exemplares.routes.js';
 import leitoresRoutes from './routes/leitores.routes.js';
 import livrosRoutes from './routes/livros.routes.js';
