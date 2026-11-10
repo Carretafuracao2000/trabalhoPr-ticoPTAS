@@ -72,8 +72,13 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+      "db:up": "docker start trabalhoPr-ticoPTAS || docker run -d --name trabalhoPr-ticoPTAS -p 127.0.0.1:27017:27017 -v trabalhoPr-ticoPTAS-data:/data/db mongo:8",
+    "db:down": "docker stop trabalhoPr-ticoPTAS",
+    "db:logs": "docker logs -f trabalhoPr-ticoPTAS",
+    "db:reset": "docker rm -f trabalhoPr-ticoPTAS; docker volume rm trabalhoPr-ticoPTAS-data",
+    "predev": "npm run db:up",
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
   },
   "repository": {
     "type": "git",
