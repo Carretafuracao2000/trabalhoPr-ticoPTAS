@@ -7,4 +7,6 @@ export function listar() {
 
 export function criar({ }) {
   if (typeof titulo !== 'string' || titulo.trim().length < 3) {
-    throw new ErroDeValidacao('O título deve ter ao menos 3 caracteres.')}};
+    throw new ErroDeValidacao('O título deve ter ao menos 3 caracteres.')
+  }
+};
